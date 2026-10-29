@@ -25,6 +25,19 @@ pipeline {
             }
         }
 
+        stage('Iniciar Appium Server') {
+            steps {
+                script {
+                    echo 'Iniciando el servidor de Appium en segundo plano...'
+                    bat 'start /b npx appium --port 4723'
+                    
+                    echo 'Esperando a que Appium esté listo en el puerto 4723...'
+                    // Pequeña pausa de seguridad para que el servidor acepte conexiones
+                    sleep(time: 5, unit: 'SECONDS')
+                }
+            }
+        }
+
         stage('Ejecutar Pruebas Appium') {
             steps {
                 script {
@@ -40,6 +53,15 @@ pipeline {
 
     post {
         always {
+            script {
+                echo 'Intentando cerrar procesos de Appium...'
+                try {
+                    bat 'taskkill /f /im node.exe'
+                } catch (e) {
+                    echo 'No hay procesos de node activos o ya se cerraron.'
+                }
+            }
+            
             // Genera y publica el reporte de Allure al finalizar
             allure includeProperties: false,
                    results: [[path: 'allure-results']],
