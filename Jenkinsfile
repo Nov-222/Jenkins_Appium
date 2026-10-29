@@ -6,6 +6,8 @@ pipeline {
     }
 
     environment {
+        // Rutas directas basadas en tu ANDROID_HOME para que Jenkins nunca falle
+        ANDROID_HOME = 'C:\\Users\\arima\\AppData\\Local\\Android\\Sdk'
         ANDROID_EMULATOR = 'Modelo_Estandar_Aplicaciones_Moviles_I' 
     }
 
@@ -19,19 +21,19 @@ pipeline {
         stage('Iniciar Emulador Automáticamente') {
             steps {
                 script {
-                    echo 'Asegurando que el servidor ADB esté activo...'
-                    bat 'adb start-server'
+                    echo 'Iniciando el servidor ADB desde la ruta absoluta...'
+                    bat "\"%ANDROID_HOME%\\platform-tools\\adb.exe\" start-server"
                     
                     echo 'Iniciando el emulador en segundo plano...'
-                    bat 'start /b emulator -avd %ANDROID_EMULATOR% -no-window -no-audio -gpu off'
+                    bat "start /b \"\" \"%ANDROID_HOME%\\emulator\\emulator.exe\" -avd %ANDROID_EMULATOR% -no-window -no-audio -gpu off"
                     
                     echo 'Esperando a que el dispositivo responda...'
-                    bat 'adb wait-for-device'
+                    bat "\"%ANDROID_HOME%\\platform-tools\\adb.exe\" wait-for-device"
                     
                     echo 'Esperando a que Android termine de cargar el sistema...'
                     bat '''
                     :check_boot
-                    for /f "delims=" %%i in ('adb shell getprop sys.boot_completed') do set BOOT=%%i
+                    for /f "delims=" %%i in ('"%ANDROID_HOME%\\platform-tools\\adb.exe" shell getprop sys.boot_completed') do set BOOT=%%i
                     if "%BOOT%"=="1" (
                         echo Emulador listo y operativo al 100%.
                     ) else (
@@ -58,17 +60,17 @@ pipeline {
 
     post {
         always {
-            // Genera y publica el reporte de Allure en Jenkins
+            // Genera y publica el reporte de Allure
             allure includeProperties: false,
                    results: [[path: 'allure-results']],
                    reportBuildPolicy: 'ALWAYS',
                    reportName: 'Allure Report - Android'
                    
-            // Apaga el emulador automáticamente al terminar (pase lo que pase)
+            // Apaga el emulador automáticamente al terminar
             script {
                 try {
                     echo 'Apagando el emulador...'
-                    bat 'adb emu kill'
+                    bat "\"%ANDROID_HOME%\\platform-tools\\adb.exe\" emu kill"
                 } catch (e) {
                     echo 'El emulador ya estaba apagado.'
                 }
