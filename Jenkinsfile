@@ -12,7 +12,8 @@ pipeline {
     stages {
         stage('Instalar Dependencias') {
             steps {
-                sh 'npm ci'
+                // 🔹 Cambiado de 'sh' a 'bat' para Windows
+                bat 'npm ci'
             }
         }
 
@@ -44,7 +45,8 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'npm test'
+                        // 🔹 Cambiado de 'sh' a 'bat' para Windows
+                        bat 'npm test'
                     } catch (err) {
                         currentBuild.result = 'UNSTABLE'
                     }
@@ -55,7 +57,7 @@ pipeline {
 
     post {
         always {
-            // 🔹 Se corrigió envolviendo los resultados en una lista con corchetes []
+            // Genera y publica el reporte de Allure
             allure includeProperties: false,
                    results: [[path: 'allure-results']],
                    reportBuildPolicy: 'ALWAYS',
