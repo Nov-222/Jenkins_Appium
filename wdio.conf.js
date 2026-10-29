@@ -1,43 +1,33 @@
 exports.config = {
-    // ====================
-    // Runner Configuration
-    // ====================
     runner: 'local',
     
-    // ==================
-    // Specify Test Files
-    // ==================
     specs: [
         './test/specs/**/*.js'
     ],
-    exclude: [
-        // 'path/to/excluded/files'
-    ],
+    exclude: [],
 
-    // ============
-    // Capabilities
-    // ============
     maxInstances: 1,
     capabilities: [{
         platformName: 'Android',
         'appium:deviceName': 'Modelo_Estandar_Aplicaciones_Moviles_I',
-        'appium:platformVersion': '14.0', // O la versión de Android de tu emulador
+        'appium:platformVersion': '14.0',
         'appium:automationName': 'UiAutomator2',
-        'appium:app': 'C:\\path\\to\\tu\\app.apk', // Reemplaza con la ruta a tu APK si es necesario
+        // Asegúrate de usar la ruta correcta de tu app o coméntala si usas una app preinstalada como la alarma
+        // 'appium:app': 'C:\\path\\to\\tu\\app.apk', 
         'appium:noReset': true
     }],
 
-    // ===================
-    // Test Configurations
-    // ===================
+    // Configuración explícita de conexión a Appium para evitar el error "Invalid URL"
+    hostname: '127.0.0.1',
+    port: 4723,
+    path: '/',
+
     logLevel: 'info',
     bail: 0,
-    baseUrl: 'http://127.0.0.1',
     waitforTimeout: 10000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
 
-    // IMPORTANTE: Dejamos los servicios vacíos de Appium para evitar errores de ES Modules
     services: [],
 
     framework: 'mocha',
