@@ -10,9 +10,9 @@ exports.config = {
     capabilities: [{
         platformName: 'Android',
         'appium:deviceName': 'Modelo_Estandar_Aplicaciones_Moviles_I',
-        'appium:platformVersion': '14.0',
+        'appium:platformVersion': '17',      // <- antes '14.0'
+        'appium:udid': 'emulator-5554',      // <- recomendado
         'appium:automationName': 'UiAutomator2',
-        // 'appium:app': 'C:\\path\\to\\tu\\app.apk', // Descomenta si usas un APK local
         'appium:noReset': true
     }],
 
