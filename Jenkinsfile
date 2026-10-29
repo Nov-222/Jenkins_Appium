@@ -28,12 +28,12 @@ pipeline {
         stage('Iniciar Appium Server') {
             steps {
                 script {
-                    echo 'Iniciando el servidor de Appium...'
-                    // Usamos cmd start para asegurar que corra en un proceso separado estable
-                    bat 'start /b cmd /c npx appium --port 4723'
+                    echo 'Iniciando el servidor de Appium en una nueva ventana persistente...'
+                    // Abre Appium en una consola independiente para evitar que se cierre solo
+                    bat 'start "" cmd /k npx appium --port 4723'
                     
-                    echo 'Esperando a que Appium esté completamente listo (8 segundos)...'
-                    sleep(time: 8, unit: 'SECONDS')
+                    echo 'Esperando a que el servidor de Appium esté listo (5 segundos)...'
+                    sleep(time: 5, unit: 'SECONDS')
                 }
             }
         }

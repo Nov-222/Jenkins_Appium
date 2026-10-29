@@ -12,12 +12,11 @@ exports.config = {
         'appium:deviceName': 'Modelo_Estandar_Aplicaciones_Moviles_I',
         'appium:platformVersion': '14.0',
         'appium:automationName': 'UiAutomator2',
-        // Asegúrate de usar la ruta correcta de tu app o coméntala si usas una app preinstalada como la alarma
-        // 'appium:app': 'C:\\path\\to\\tu\\app.apk', 
+        // 'appium:app': 'C:\\path\\to\\tu\\app.apk', // Descomenta si usas un APK local
         'appium:noReset': true
     }],
 
-    // Configuración explícita de conexión a Appium para evitar el error "Invalid URL"
+    // Configuración explícita de conexión a Appium
     hostname: '127.0.0.1',
     port: 4723,
     path: '/',
