@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-        // Rutas directas basadas en tu ANDROID_HOME para que Jenkins nunca falle
         ANDROID_HOME = 'C:\\Users\\arima\\AppData\\Local\\Android\\Sdk'
         ANDROID_EMULATOR = 'Modelo_Estandar_Aplicaciones_Moviles_I' 
     }
@@ -24,8 +23,8 @@ pipeline {
                     echo 'Iniciando el servidor ADB desde la ruta absoluta...'
                     bat "\"%ANDROID_HOME%\\platform-tools\\adb.exe\" start-server"
                     
-                    echo 'Iniciando el emulador en segundo plano...'
-                    bat "start /b \"\" \"%ANDROID_HOME%\\emulator\\emulator.exe\" -avd %ANDROID_EMULATOR% -no-window -no-audio -gpu off"
+                    echo 'Iniciando el emulador de forma visible para depuración...'
+                    bat "start \"\" \"%ANDROID_HOME%\\emulator\\emulator.exe\" -avd %ANDROID_EMULATOR% -no-audio -gpu off"
                     
                     echo 'Esperando a que el dispositivo responda...'
                     bat "\"%ANDROID_HOME%\\platform-tools\\adb.exe\" wait-for-device"
