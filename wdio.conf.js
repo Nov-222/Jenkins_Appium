@@ -10,9 +10,11 @@ exports.config = {
     capabilities: [{
         platformName: 'Android',
         'appium:deviceName': 'Modelo_Estandar_Aplicaciones_Moviles_I',
-        'appium:platformVersion': '17',      // <- antes '14.0'
-        'appium:udid': 'emulator-5554',      // <- recomendado
+        'appium:udid': 'emulator-5554',
         'appium:automationName': 'UiAutomator2',
+        'appium:appPackage': 'com.google.android.deskclock',
+        'appium:appActivity': 'com.android.deskclock.DeskClock',
+        'appium:appWaitActivity': '*',
         'appium:noReset': true
     }],
 
