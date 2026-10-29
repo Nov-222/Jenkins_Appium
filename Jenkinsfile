@@ -2,12 +2,11 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS20' // Asegúrate de que coincida con el nombre en tu configuración de Jenkins
+        nodejs 'NodeJS20' // 🔹 Coincide exactamente con el nombre que pusiste en Jenkins
     }
 
     environment {
-        // Define el nombre exacto de tu emulador (el que ves al ejecutar 'emulator -list-avds' en tu terminal)
-        ANDROID_EMULATOR = 'emulator' 
+        ANDROID_EMULATOR = 'Modelo_Estandar_Aplicaciones_Moviles_I' 
     }
 
     stages {
@@ -17,29 +16,25 @@ pipeline {
             }
         }
 
-        stage('Iniciar Emulador Android') {
+        stage('Iniciar Emulador Automáticamente') {
             steps {
                 script {
-                    // Ejecuta el emulador en segundo plano sin interfaz gráfica (headless con '-no-window') 
-                    // y con '-no-audio' para ahorrar recursos. Ajusta la ruta del SDK si es necesario.
-                    bat '''
-                    start /b emulator -avd %ANDROID_EMULATOR% -no-window -no-audio -gpu off
-                    '''
+                    echo 'Iniciando el emulador en segundo plano...'
+                    bat 'start /b emulator -avd %ANDROID_EMULATOR% -no-window -no-audio -gpu off'
                     
-                    // Comando de ADB para esperar a que el emulador encienda y responda al 100%
-                    echo 'Esperando a que el emulador arranque...'
+                    echo 'Esperando a que el dispositivo responda...'
                     bat 'adb wait-for-device'
                     
-                    // Bucle extra para asegurar que Android terminó de cargar el escritorio virtual
+                    echo 'Esperando a que Android termine de cargar el sistema...'
                     bat '''
                     :check_boot
                     for /f "delims=" %%i in ('adb shell getprop sys.boot_completed') do set BOOT=%%i
                     if "%BOOT%"=="1" (
-                        echo Emulador listo y operativo.
+                        echo Emulador listo y operativo al 100%.
                     ) else (
                         timeout /t 5 >nul
                         goto check_boot
-                    )
+                    }
                     '''
                 }
             }
@@ -66,8 +61,15 @@ pipeline {
                    reportBuildPolicy: 'ALWAYS',
                    reportName: 'Allure Report - Android'
                    
-            // Apagar el emulador ordenadamente al terminar la ejecución
-            bat 'adb emu kill' catchError: true
+            // Apaga el emulador automáticamente al terminar
+            script {
+                try {
+                    echo 'Apagando el emulador...'
+                    bat 'adb emu kill'
+                } catch (e) {
+                    echo 'El emulador ya estaba apagado.'
+                }
+            }
         }
     }
 }
