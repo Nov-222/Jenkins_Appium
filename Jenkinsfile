@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS20' // 🔹 Coincide exactamente con el nombre que pusiste en Jenkins
+        nodejs 'NodeJS20'
     }
 
     environment {
@@ -55,9 +55,9 @@ pipeline {
 
     post {
         always {
-            // Genera y publica el reporte de Allure
+            // 🔹 Se corrigió envolviendo los resultados en una lista con corchetes []
             allure includeProperties: false,
-                   results: 'allure-results',
+                   results: [[path: 'allure-results']],
                    reportBuildPolicy: 'ALWAYS',
                    reportName: 'Allure Report - Android'
                    
