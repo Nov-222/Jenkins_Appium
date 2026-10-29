@@ -12,7 +12,6 @@ pipeline {
     stages {
         stage('Instalar Dependencias') {
             steps {
-                // 🔹 Cambiado de 'sh' a 'bat' para Windows
                 bat 'npm ci'
             }
         }
@@ -20,6 +19,9 @@ pipeline {
         stage('Iniciar Emulador Automáticamente') {
             steps {
                 script {
+                    echo 'Asegurando que el servidor ADB esté activo...'
+                    bat 'adb start-server'
+                    
                     echo 'Iniciando el emulador en segundo plano...'
                     bat 'start /b emulator -avd %ANDROID_EMULATOR% -no-window -no-audio -gpu off'
                     
@@ -45,7 +47,6 @@ pipeline {
             steps {
                 script {
                     try {
-                        // 🔹 Cambiado de 'sh' a 'bat' para Windows
                         bat 'npm test'
                     } catch (err) {
                         currentBuild.result = 'UNSTABLE'
@@ -57,13 +58,13 @@ pipeline {
 
     post {
         always {
-            // Genera y publica el reporte de Allure
+            // Genera y publica el reporte de Allure en Jenkins
             allure includeProperties: false,
                    results: [[path: 'allure-results']],
                    reportBuildPolicy: 'ALWAYS',
                    reportName: 'Allure Report - Android'
                    
-            // Apaga el emulador automáticamente al terminar
+            // Apaga el emulador automáticamente al terminar (pase lo que pase)
             script {
                 try {
                     echo 'Apagando el emulador...'
