@@ -2,12 +2,13 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS20'
+        nodejs 'NODE22'
     }
 
     environment {
-        ANDROID_HOME = 'C:\\Users\\arima\\AppData\\Local\\Android\\Sdk'
-    }
+    ANDROID_HOME = 'C:\\Users\\arima\\AppData\\Local\\Android\\Sdk'
+    APPIUM_HOME  = 'C:\\Users\\arima\\.appium'
+}
 
     stages {
         stage('Instalar Dependencias') {
@@ -27,14 +28,19 @@ pipeline {
 
         stage('Iniciar Appium Server') {
             steps {
-                script {
-                    echo 'Iniciando el servidor de Appium en una nueva ventana persistente...'
-                    // Abre Appium en una consola independiente para evitar que se cierre solo
-                    bat 'start "" cmd /k npx appium --port 4723'
-                    
-                    echo 'Esperando a que el servidor de Appium esté listo (5 segundos)...'
-                    sleep(time: 5, unit: 'SECONDS')
-                }
+                bat 'node -v'
+                bat 'start /B cmd /c "npx appium --port 4723 > appium.log 2>&1"'
+                powershell '''
+                    $ok = $false
+                    for ($i = 0; $i -lt 40; $i++) {
+                        try {
+                            Invoke-WebRequest -Uri http://127.0.0.1:4723/status -UseBasicParsing -TimeoutSec 2 | Out-Null
+                            $ok = $true; break
+                        } catch { Start-Sleep -Seconds 3 }
+                    }
+                    if (-not $ok) { Get-Content appium.log; throw "Appium no arrancó a tiempo" }
+                    Write-Host "Appium listo"
+                '''
             }
         }
 
