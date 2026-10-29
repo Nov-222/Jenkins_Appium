@@ -1,38 +1,46 @@
 exports.config = {
+    // ====================
+    // Runner Configuration
+    // ====================
     runner: 'local',
-    port: 4723,
     
-    // 🔹 Ajusta la ruta exacta según tu estructura de carpetas
+    // ==================
+    // Specify Test Files
+    // ==================
     specs: [
         './test/specs/**/*.js'
     ],
-    
     exclude: [
         // 'path/to/excluded/files'
     ],
-    
-    maxInstances: 10,
-    
+
+    // ============
+    // Capabilities
+    // ============
+    maxInstances: 1,
     capabilities: [{
         platformName: 'Android',
-        "appium:deviceName": "emulator",          
-        "appium:automationName": "UiAutomator2",
-        "appium:appPackage": "com.google.android.deskclock",  
-        "appium:appActivity": "com.android.deskclock.DeskClock", 
-        "appium:newCommandTimeout": 300,
-        "appium:autoGrantPermissions": true
+        'appium:deviceName': 'Modelo_Estandar_Aplicaciones_Moviles_I',
+        'appium:platformVersion': '14.0', // O la versión de Android de tu emulador
+        'appium:automationName': 'UiAutomator2',
+        'appium:app': 'C:\\path\\to\\tu\\app.apk', // Reemplaza con la ruta a tu APK si es necesario
+        'appium:noReset': true
     }],
 
+    // ===================
+    // Test Configurations
+    // ===================
     logLevel: 'info',
     bail: 0,
+    baseUrl: 'http://127.0.0.1',
     waitforTimeout: 10000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
-    
-    services: ['appium'],
+
+    // IMPORTANTE: Dejamos los servicios vacíos de Appium para evitar errores de ES Modules
+    services: [],
+
     framework: 'mocha',
-    
-    // 🔹 Añadimos el reportero de Spec y Allure configurado
     reporters: [
         'spec',
         ['allure', {
@@ -45,5 +53,5 @@ exports.config = {
     mochaOpts: {
         ui: 'bdd',
         timeout: 60000
-    },
-}
+    }
+};

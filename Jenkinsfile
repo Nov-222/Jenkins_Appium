@@ -28,11 +28,10 @@ pipeline {
         stage('Iniciar Appium Server') {
             steps {
                 script {
-                    echo 'Iniciando el servidor de Appium en segundo plano...'
+                    echo 'Iniciando el servidor de Appium de forma independiente...'
                     bat 'start /b npx appium --port 4723'
                     
-                    echo 'Esperando a que Appium esté listo en el puerto 4723...'
-                    // Pequeña pausa de seguridad para que el servidor acepte conexiones
+                    echo 'Esperando a que el servidor de Appium esté listo...'
                     sleep(time: 5, unit: 'SECONDS')
                 }
             }
@@ -54,7 +53,7 @@ pipeline {
     post {
         always {
             script {
-                echo 'Intentando cerrar procesos de Appium...'
+                echo 'Cerrando procesos de Node/Appium activos...'
                 try {
                     bat 'taskkill /f /im node.exe'
                 } catch (e) {
@@ -62,7 +61,7 @@ pipeline {
                 }
             }
             
-            // Genera y publica el reporte de Allure al finalizar
+            // Genera y publica el reporte de Allure en Jenkins de manera automática
             allure includeProperties: false,
                    results: [[path: 'allure-results']],
                    reportBuildPolicy: 'ALWAYS',
